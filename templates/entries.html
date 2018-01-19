@@ -2,15 +2,19 @@
 
 {% block content %}
 {% if entries|length == 0 %}
+
+<article class="blogpost">
+<h2>No Entries. :(</h2>
     <p>No entries :'(</p>
+</article>
     {% else %}
 
             {% for entry in entries %}
             <article class="blogpost" id="{{entry.entry_id}}">
             <a href="/blog?id={{entry.entry_id}}"><h2 class="a">{{entry.title}}</h2></a>
-            <h3 class="date">Posted on {{entry.date}}</h3>
+            <h3 class="date">Posted on {{entry.date}} </h3>
                 {{entry.entry}}
-                
+                <p>Written by <a href="/blog?user={{entry.author_id}}">{{entry.author.username}}</a></p>
             </article>
     
             {% endfor %}

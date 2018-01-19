@@ -1,13 +1,14 @@
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from validate import FormValidator, form, is_invalid_input
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:garbage@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:garbage@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-app.secret_key = 'VF%^ghyjGRSfs4545&^FGS^5$%'
+app.secret_key = 'VF%^ghyjGRSfs4sdgfhdsgfdshgfdh^FUCK_________shhd6545&^FGS^5$%'
 
 class Post(db.Model):
 
@@ -15,84 +16,160 @@ class Post(db.Model):
     title = db.Column(db.String(120))
     entry = db.Column(db.Text)
     date = db.Column(db.DateTime)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    # category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
 
-    def __init__(self, title, entry, date, category):
+    def __init__(self, title, entry, date, author):
         self.title = title
         self.entry = entry
         if date is None:
             date = datetime.utcnow()
         self.date = date
-        self.category = category
+        self.author = author
 
     def __repr__(self):
         return str(self.entry_id)
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    entry = db.relationship('Post', backref='category')
+# class Category(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50))
+#     entry = db.relationship('Post', backref='category')
 
-    def __init__(self, name):
-        self.name = name
+#     def __init__(self, name):
+#         self.name = name
 
+class User(db.Model):
+    user_id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(30), unique=True, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    blogs = db.relationship('Post', backref='author')
+
+    def __init__(self, email, username, password):
+        self.username = username
+        self.email = email
+        self.password = password
+
+@app.before_request
+def require_login():
+    login_required_routes = ['newpost']
+    if request.endpoint in login_required_routes and 'user_id' not in session: 
+        return redirect('/login')
 @app.route('/')
 def index():
-    return "No snoop plz"
-
+    authors = User.query.all()
+    return render_template('authors.html', authors=authors)
 
 @app.route('/blog')
 def blog():
-    entries = Post.query.order_by(Post.date.desc()).all()
+    entries = Post.query.join(User).order_by(Post.date.desc()).all()
     post_id = request.args.get('id')
+    author_id = request.args.get('user')
     entry = Post.query.filter_by(entry_id=post_id).first()
-    #category = Post.query.join(Post.category_id).first()
     if not post_id:
-        return render_template('entries.html', entries=entries)
+        if author_id:
+            the_author = Post.query.filter_by(author_id=author_id).all()
+            return render_template('entries.html', entries=the_author)
+        else:
+            return render_template('entries.html', entries=entries)
     else:
-        return render_template('entry.html', entry=entry)        
+        return render_template('entry.html', entry=entry)       
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
+    author = User.query.filter_by(user_id=session['user_id']).first()
     if request.method == 'POST':
         entry_title = request.form['title']
         entry_post = request.form['entry']
-        category = request.form['category-new']
-        category_exst = request.form['category-exst']
-        if category == "":
-            category = category_exst
-        else:
-            if category_exst != "":
-                flash("Please don't do that")
-                return render_template('new-entry.html', title=entry_title, post=entry_post, categories=retrieve_categories())
-        if entry_post == "" or entry_title == "" or category == "":
-            flash('Please do not leave any fields blank')
-            return render_template('new-entry.html', title=entry_title, post=entry_post, categories=retrieve_categories())
+        # if category == "":
+        #     category = category_exst
+        # else:
+        #     if category_exst != "":
+        #         flash("Please don't do that")
+        #         return render_template('new-entry.html', title=entry_title, post=entry_post)
+        # if entry_post == "" or entry_title == "" or category == "":
+        #     flash('Please do not leave any fields blank')
+        #     return render_template('new-entry.html', title=entry_title, post=entry_post)
 
-        category_exists = Category.query.filter_by(name=category).first()
-        if not category_exists:
-            new_category = Category(category)
-            db.session.add(new_category)
-            db.session.commit()
-            category_id = Category.query.get(new_category.id)
-        else:
-            category_id = Category.query.get(category_exists.id)
-        new_entry = Post(entry_title, entry_post, None, category_id)
+        # category_exists = Category.query.filter_by(name=category).first()
+        # if not category_exists:
+        #     new_category = Category(category)
+        #     db.session.add(new_category)
+        #     db.session.commit()
+        #     category_id = Category.query.get(new_category.id)
+        # else:
+        #     category_id = Category.query.get(category_exists.id)
+        new_entry = Post(entry_title, entry_post, None, author)
         db.session.add(new_entry)
         db.session.commit()
         new_post = Post.query.get(new_entry.entry_id)
 
-        
-
         return redirect('/blog?id={0}'.format(new_post))
-    return render_template('new-entry.html', categories=retrieve_categories())
+    return render_template('new-entry.html')
 
-def retrieve_categories():
-    categories = []
-    all_cats = Category.query.all()
-    for cat in all_cats:
-        categories.append(cat.name)
-    return categories
+@app.route('/signup')
+def signup():
+    return render_template('signup.html', dictionary=form)
+
+@app.route('/signup', methods=['POST'])
+def validate():
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+    verify = request.form['verify']
+
+    invalidation = is_invalid_input(username, email, password, verify)
+
+    if invalidation == False:
+        existing_user = User.query.filter_by(username=username).first()
+
+        if not existing_user:
+            new_user = User(email, username, password)
+            db.session.add(new_user)
+            db.session.flush()   #flush session to get id of inserted row
+            db.session.commit()
+            session['user_id'] = new_user.user_id
+            flash("You have successfully registered")
+            return redirect('/blog')
+        else:
+            flash("User already exists")
+            return render_template('signup.html', dictionary=form)
+    
+    else:
+        return render_template("signup.html",
+    dictionary=form, error=validation)
+
+
+    return render_template('signup.html', dictionary=form)
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['user_id'] = user.user_id
+            #flash('You have successfully logged in')
+            return redirect('/blog')
+        else:
+            #flash('Username and/or password incorrect; or user does not exist.', 'error')
+            return render_template('login.html')
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    del session['user_id']
+    return redirect('/blog')
+
+
+# def retrieve_categories():
+#     categories = []
+#     all_cats = Category.query.all()
+#     for cat in all_cats:
+#         categories.append(cat.name)
+#     return categories
 
 
 if __name__ == '__main__':

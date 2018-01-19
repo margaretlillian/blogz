@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} &Rang; Sign Up {% endblock %}
+{% block content %}
+<section class="blogpost">
+<h2>Sign Up to Post to the Blog</h2>
+
+<ul>
+    <li>All fields are required.</li>
+    <li>Usernames cannot contain any special characters other than '_' and '-'.</li>
+    <li>Usernames must be between 3 and 20 characters long.</li>
+    <li>Passwords must be at least 8 characters, and contain at least one of each:
+        <ul>
+            <li>Lowercase letter</li>
+            <li>Capital letter</li>
+            <li>Number</li>
+            <li>Special character</li>
+        </ul>
+    </li>
+</ul>
+
+<form method="POST">
+        {% if error %}
+        <span class="error">{{error}}</span>
+        {% endif %}
+                {% for k, v in dictionary.items() %}
+                <label for="{{ k }}">{{ v }} <br />
+                    <input name="{{ k }}" id="{{ k }}"
+                        {% if k=="password" or k=="verify" %}type="password" {% else %}type="text"{% endif %}> 
+                    </label>
+                                  
+                    
+                {% endfor %}
+                
+                <input id="submit" type="submit" value="Submit">
+</form>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+    <!-- <label>
+      Category:<br>
+      <input type="text" name="category-new" value="{{category}}"> 
+      {% if categories|length == 0 %}
+      <input type="hidden" name="category-exst" value="">
+    {% else %}
+        <select name="category-exst">
+                <option value="" selected></option>
+                {% for category in categories %}
+                  <option value="{{category}}">{{category}}</option>
+                {% endfor %}
+          </select>
+          {% endif %}
+    </label> -->

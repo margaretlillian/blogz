@@ -1,3 +1,14 @@
+# (obv) Make author line prettier
+# Bring back categories ;)
+# Delete functionality
+    # ??????  Ask if they're sure before deleting
+    # Make delete button small/unobtrusive
+# Format validation properly
+# Javascript and HTML validation!!! 
+
+###???? WSIWYG editor??
+### ????? Organize code mo betta
+
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -137,7 +148,7 @@ def validate():
     
     else:
         return render_template("signup.html",
-    dictionary=form, error=validation)
+    dictionary=form, error=invalidation)
 
 
     return render_template('signup.html', dictionary=form)

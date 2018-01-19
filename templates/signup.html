@@ -19,15 +19,15 @@
 </ul>
 
 <form method="POST">
-        {% if error %}
-        <span class="error">{{error}}</span>
-        {% endif %}
+       
                 {% for k, v in dictionary.items() %}
                 <label for="{{ k }}">{{ v }} <br />
                     <input name="{{ k }}" id="{{ k }}"
                         {% if k=="password" or k=="verify" %}type="password" {% else %}type="text"{% endif %}> 
                     </label>
-                                  
+                    {% if error %}
+        <span class="error">{{error}}</span>
+        {% endif %}               
                     
                 {% endfor %}
                 

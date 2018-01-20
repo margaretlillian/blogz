@@ -1,16 +1,15 @@
 body {
-    background: #ddd;
-    color: #7b7b7b;
+    background: #ccc;
+    color: #7c9493;
     font: 1.1em sans-serif;
     line-height: 1.75em;
 }
-
 a, h2.a {
-    color: #f03f37;
+    color: #af4c68;
     text-decoration: none;
 }
 
-a, h2 { border-bottom: 1px solid #19133f;}
+a, h2 { border-bottom: 1px solid #dfc228;}
 
 label {
     display: block;
@@ -18,20 +17,25 @@ label {
     font-size: 1.3em;
 }
 
-h1 {
-    font: bold 3em monospace;
+li {
+list-style: circle;}
+
+h1, h1 a {
+    font: bold 2em monospace;
+    border: none;
+    color: #158a9e;
 }
 
 h2 {
     font: bold 2.5em monospace;
-    color: #19133f;
+    color: #31332e;
     margin: 2px;
 }
 
 h3 {
     font: bold 1.75em monospace;
     margin: 2px;
-    color: #9c9432;
+    color: #b6b775;
 }
 
 h2, h3 {
@@ -73,6 +77,13 @@ margin: 0 auto;}
     margin-left: 30px;
 }
 
+.author {
+    color: #9a8482;
+    font: 1em monospace;
+}
+
+.active {font-weight: bold;}
+
 #sidebar {
     width: 23%;
     float: left;
@@ -89,7 +100,7 @@ font-weight:bold;}
 
 #delete {font-size: 0.6em;
 border: 1px solid #d00;
-color: #d00;
+color: #000;
 margin: 20px;
 padding: 1px;}
 

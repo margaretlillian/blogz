@@ -14,7 +14,7 @@
             <a href="/blog?id={{entry.entry_id}}"><h2 class="a">{{entry.title}}</h2></a>
             <h3 class="date">Posted on {{entry.date}} </h3>
                 {{entry.entry}}
-                <p>Written by <a href="/blog?user={{entry.author_id}}">{{entry.author.username}}</a></p>
+                <p class="author">Written by <a href="/blog?user={{entry.author_id}}">{{entry.author.username}}</a></p>
             </article>
     
             {% endfor %}

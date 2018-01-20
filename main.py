@@ -1,4 +1,3 @@
-# (obv) Make author line prettier
 # Bring back categories ;)
 # Delete functionality
     # ??????  Ask if they're sure before deleting
@@ -75,7 +74,8 @@ def blog():
     post_id = request.args.get('id')
     author_id = request.args.get('user')
     entry = Post.query.filter_by(entry_id=post_id).first()
-    user = User.query.get(session.get('user_id'))
+    if 'user_id' in session:
+        user = User.query.get(session.get('user_id'))
     if not post_id:
         if author_id:
             the_author = Post.query.filter_by(author_id=author_id).all()

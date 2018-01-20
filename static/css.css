@@ -52,9 +52,6 @@ textarea {
     height: 300px;
 }
 
-.blogpost {
-}
-
 #main {width: 80%;
 margin: 0 auto;}
 
@@ -86,6 +83,15 @@ margin: 0 auto;}
     width: 75%;
     float: right;
 }
+
+.error {color: #f00;
+font-weight:bold;}
+
+#delete {font-size: 0.6em;
+border: 1px solid #d00;
+color: #d00;
+margin: 20px;
+padding: 1px;}
 
 @media only screen and (max-width: 700px) {
 #sidebar, #content {

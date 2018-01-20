@@ -2,9 +2,7 @@
 # Bring back categories ;)
 # Delete functionality
     # ??????  Ask if they're sure before deleting
-    # Make delete button small/unobtrusive
-# Format validation properly
-# Javascript and HTML validation!!! 
+# Javascript validation
 
 ###???? WSIWYG editor??
 ### ????? Organize code mo betta
@@ -12,7 +10,7 @@
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from validate import FormValidator, form, is_invalid_input
+from validate import FormValidator, is_invalid_input
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -77,6 +75,7 @@ def blog():
     post_id = request.args.get('id')
     author_id = request.args.get('user')
     entry = Post.query.filter_by(entry_id=post_id).first()
+    user = User.query.get(session.get('user_id'))
     if not post_id:
         if author_id:
             the_author = Post.query.filter_by(author_id=author_id).all()
@@ -84,7 +83,7 @@ def blog():
         else:
             return render_template('entries.html', entries=entries)
     else:
-        return render_template('entry.html', entry=entry)       
+        return render_template('entry.html', entry=entry, userid=user.user_id)       
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
@@ -98,9 +97,9 @@ def newpost():
         #     if category_exst != "":
         #         flash("Please don't do that")
         #         return render_template('new-entry.html', title=entry_title, post=entry_post)
-        # if entry_post == "" or entry_title == "" or category == "":
-        #     flash('Please do not leave any fields blank')
-        #     return render_template('new-entry.html', title=entry_title, post=entry_post)
+        if entry_post == "" or entry_title == "":
+            flash('Please do not leave any fields blank')
+            return render_template('new-entry.html', title=entry_title, post=entry_post)
 
         # category_exists = Category.query.filter_by(name=category).first()
         # if not category_exists:
@@ -120,18 +119,32 @@ def newpost():
 
 @app.route('/signup')
 def signup():
+        
+    form = {"username": ["Username"],
+    "email": ["Email Address"],
+    "password": ["Password"],
+    "verify": ["Verify Password"]}
     return render_template('signup.html', dictionary=form)
 
 @app.route('/signup', methods=['POST'])
 def validate():
+        
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
     verify = request.form['verify']
 
-    invalidation = is_invalid_input(username, email, password, verify)
+    username_error = FormValidator.is_bad_username(username)
+    email_error = FormValidator.is_invalid_email(email)
+    password_error = FormValidator.is_invalid_password(password)
+    verif_error = FormValidator.does_not_match(password, verify)
+    
+    form = {"username": ["Username", username_error],
+    "email": ["Email Address", email_error],
+    "password": ["Password", password_error],
+    "verify": ["Verify Password", verif_error]}
 
-    if invalidation == False:
+    if username_error == '' and email_error == '' and password_error == '' and verif_error == '':
         existing_user = User.query.filter_by(username=username).first()
 
         if not existing_user:
@@ -147,8 +160,11 @@ def validate():
             return render_template('signup.html', dictionary=form)
     
     else:
+        error = ''
+        for y in form.values():
+            error += y[1]
         return render_template("signup.html",
-    dictionary=form, error=invalidation)
+    dictionary=form, username=username, email=email, error=error)
 
 
     return render_template('signup.html', dictionary=form)
@@ -172,6 +188,16 @@ def login():
 @app.route('/logout')
 def logout():
     del session['user_id']
+    return redirect('/blog')
+
+@app.route('/delete-post', methods=['POST'])
+def delete_post():
+
+    post_id = int(request.form['post-id'])
+    post = Post.query.get(post_id)
+    db.session.delete(post)
+    db.session.commit()
+
     return redirect('/blog')
 
 

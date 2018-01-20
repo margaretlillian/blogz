@@ -4,6 +4,12 @@
             <h2>{{entry.title}}</h2>
             <h3 class="date">Posted on {{entry.date}}</h3>
                 {{entry.entry}}
+                {% if entry.author_id == userid %}
+                <form method="POST" action="/delete-post">
+                    <input type="hidden" name="post-id" value="{{entry.entry_id}}" />
+                    <input type="submit" id="delete" value="Delete Post" />
+                </form>
+                {% endif %}
             </section>
 
 {% endblock %}

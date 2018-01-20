@@ -8,7 +8,7 @@
     <li>All fields are required.</li>
     <li>Usernames cannot contain any special characters other than '_' and '-'.</li>
     <li>Usernames must be between 3 and 20 characters long.</li>
-    <li>Passwords must be at least 8 characters, and contain at least one of each:
+    <li>Passwords must be at least 8 characters long, and contain at least one of each:
         <ul>
             <li>Lowercase letter</li>
             <li>Capital letter</li>
@@ -21,12 +21,13 @@
 <form method="POST">
        
                 {% for k, v in dictionary.items() %}
-                <label for="{{ k }}">{{ v }} <br />
-                    <input name="{{ k }}" id="{{ k }}"
-                        {% if k=="password" or k=="verify" %}type="password" {% else %}type="text"{% endif %}> 
+                <label for="{{ k }}">{{ v[0] }} <br />
+                    <input {% if k=="username" %}value="{{username}}"{%elif k=="email"%}value="{{email}}"{% endif %}
+                    name="{{ k }}" id="{{ k }}"
+                        {% if k=="password" or k=="verify" %}type="password" {% elif k=="email" %}type="email" {% else %}type="text"{% endif %} required> 
                     </label>
                     {% if error %}
-        <span class="error">{{error}}</span>
+        <p class="error">{{v[1]}}</p>
         {% endif %}               
                     
                 {% endfor %}

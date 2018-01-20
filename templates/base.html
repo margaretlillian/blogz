@@ -19,15 +19,16 @@
                 <p>I am currently attempting to contribute to the tech version of Florida's Python invasion. Wish me luck!</p>
          </section>   
 
+         {% from "macros.html" import nav_link with context %}
          <section class="bar" id="nav">
             <h3>Admin</h3>
             <ul>
               {% if not session.user_id %}
-              <li><a href="/signup">Sign Up</a></li>
-              <li><a href="/login">Login</a></li>
+              {{ nav_link('signup', 'Sign Up') }}
+              {{ nav_link('login', 'Login') }}
   
               {% else %}
-              <li> <a href="/newpost">Create New Entry</a></li>
+              {{ nav_link('newpost', 'Create New Entry') }}
               <li><a href="/logout">Logout</a></li>
               {% endif %}
             </ul>
@@ -36,7 +37,7 @@
         <section class="bar" id="stuff"> 
           <h3>Navigation</h3>
           <ul>
-            <li><a href="/blog">Entries</a> </li>
+            <li><a href="/blog">All Entries</a></li>
             <li><a href="/">Authors</a></li>
 
           </ul>
@@ -57,6 +58,7 @@
     {% block content %}
     {% endblock %}
         </section>
+        
   </div>
 </body>
 </html>

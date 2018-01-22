@@ -12,3 +12,27 @@
           </select>
           {% endif %}
     </label> -->
+
+ def retrieve_categories():
+     categories = []
+     all_cats = Category.query.all()
+     for cat in all_cats:
+         categories.append(cat.name)
+     return categories
+
+        # category_exists = Category.query.filter_by(name=category).first()
+        # if not category_exists:
+        #     new_category = Category(category)
+        #     db.session.add(new_category)
+        #     db.session.commit()
+        #     category_id = Category.query.get(new_category.id)
+        # else:
+        #     category_id = Category.query.get(category_exists.id)
+
+        
+        # if category == "":
+        #     category = category_exst
+        # else:
+        #     if category_exst != "":
+        #         flash("Please don't do that")
+        #         return render_template('new-entry.html', title=entry_title, post=entry_post)

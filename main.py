@@ -1,11 +1,3 @@
-# Bring back categories ;)
-# Delete functionality
-    # ??????  Ask if they're sure before deleting
-# Javascript validation
-
-###???? WSIWYG editor??
-### ????? Organize code mo betta
-
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -37,15 +29,6 @@ class Post(db.Model):
 
     def __repr__(self):
         return str(self.entry_id)
-
-# class Category(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(50))
-#     entry = db.relationship('Post', backref='category')
-
-#     def __init__(self, name):
-#         self.name = name
-
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(30), unique=True, nullable=False)
@@ -74,8 +57,6 @@ def blog():
     post_id = request.args.get('id')
     author_id = request.args.get('user')
     entry = Post.query.filter_by(entry_id=post_id).first()
-    if 'user_id' in session:
-        user = User.query.get(session.get('user_id'))
     if not post_id:
         if author_id:
             the_author = Post.query.filter_by(author_id=author_id).all()
@@ -83,7 +64,7 @@ def blog():
         else:
             return render_template('entries.html', entries=entries)
     else:
-        return render_template('entry.html', entry=entry, userid=user.user_id)       
+        return render_template('entry.html', entry=entry)       
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
@@ -91,24 +72,10 @@ def newpost():
     if request.method == 'POST':
         entry_title = request.form['title']
         entry_post = request.form['entry']
-        # if category == "":
-        #     category = category_exst
-        # else:
-        #     if category_exst != "":
-        #         flash("Please don't do that")
-        #         return render_template('new-entry.html', title=entry_title, post=entry_post)
         if entry_post == "" or entry_title == "":
             flash('Please do not leave any fields blank')
             return render_template('new-entry.html', title=entry_title, post=entry_post)
 
-        # category_exists = Category.query.filter_by(name=category).first()
-        # if not category_exists:
-        #     new_category = Category(category)
-        #     db.session.add(new_category)
-        #     db.session.commit()
-        #     category_id = Category.query.get(new_category.id)
-        # else:
-        #     category_id = Category.query.get(category_exists.id)
         new_entry = Post(entry_title, entry_post, None, author)
         db.session.add(new_entry)
         db.session.commit()
@@ -199,15 +166,6 @@ def delete_post():
     db.session.commit()
 
     return redirect('/blog')
-
-
-# def retrieve_categories():
-#     categories = []
-#     all_cats = Category.query.all()
-#     for cat in all_cats:
-#         categories.append(cat.name)
-#     return categories
-
 
 if __name__ == '__main__':
     app.run()

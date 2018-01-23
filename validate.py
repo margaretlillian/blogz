@@ -46,14 +46,3 @@ class FormValidator:
             
     def __str__(self):
         return self.usr_input
-
-def is_invalid_input(username, email, password, verify):
-    username_error = FormValidator.is_bad_username(username)
-    email_error = FormValidator.is_invalid_email(email)
-    password_error = FormValidator.is_invalid_password(password)
-    verify_error = FormValidator.does_not_match(password, verify)
-
-    if not username_error and not email_error and not password_error and not verify_error:
-        return ''
-    else:
-        return [username_error, email_error, password_error, verify_error]

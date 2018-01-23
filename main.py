@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from validate import FormValidator, is_invalid_input
+from validate import FormValidator
+from hashutils import check_pw_hash, make_pw_hash
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -33,13 +35,13 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(30), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    pw_hash = db.Column(db.String(100), nullable=False)
     blogs = db.relationship('Post', backref='author')
 
     def __init__(self, email, username, password):
         self.username = username
         self.email = email
-        self.password = password
+        self.pw_hash = make_pw_hash(password)
 
 @app.before_request
 def require_login():
@@ -143,7 +145,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_pw_hash(password, user.pw_hash):
             session['user_id'] = user.user_id
             #flash('You have successfully logged in')
             return redirect('/blog')

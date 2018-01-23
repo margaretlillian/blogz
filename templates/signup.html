@@ -27,7 +27,15 @@
                         {% if k=="password" or k=="verify" %}type="password" {% elif k=="email" %}type="email" {% else %}type="text"{% endif %} required> 
                     </label>
                     {% if error %}
-        <p class="error">{{v[1]}}</p>
+                    
+            <ul class="error">
+                    {% for errors in v[1] %}
+                    {% if errors|length == 0 %}
+                    {% else %}
+                    <li> {{errors}}</li>
+                    {% endif %}
+                    {% endfor %}
+    </ul>
         {% endif %}               
                     
                 {% endfor %}

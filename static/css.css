@@ -96,7 +96,8 @@ margin: 0 auto;}
 }
 
 .error {color: #f00;
-font-weight:bold;}
+font-weight:bold;
+list-style-type: disc;}
 
 #delete {font-size: 0.6em;
 border: 1px solid #d00;

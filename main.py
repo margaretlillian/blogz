@@ -129,7 +129,7 @@ def validate():
             return render_template('signup.html', dictionary=form)
     
     else:
-        error = ''
+        error = []
         for y in form.values():
             error += y[1]
         return render_template("signup.html",

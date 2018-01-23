@@ -7,6 +7,11 @@
 
 <form method="POST">
     <p>You must sign in to post entries. If you do not already have an account, you may <a href="/signup">register for one</a>.</p>
+    {%if error %}
+    <ul class="error">
+        <li>{{error}}</li>
+    </ul>
+    {% endif %}
     <label>
         Username: <br />
         <input type="text" name="username" id="username"></label>

@@ -14,6 +14,8 @@ class FormValidator:
                 error += "Please enter a username. *"
             else:
                 error += "Usernames must be between 3 and 20 characters."
+        else:
+            return error
         return error.split("*")
             
     @staticmethod
@@ -25,6 +27,8 @@ class FormValidator:
             error += "Emails must be shorter than 30 characters. *"
         if email == '':
             error += "Please enter an email address."
+        else:
+            return error
         return error.split("*")
             
     @staticmethod
@@ -40,6 +44,8 @@ class FormValidator:
             error += "Passwords must have at least one number. *"
         if not re.match(r"(?=^.{8,100}$)", pw):
             error += "Passwords must be at least 8 characters long. "
+        else:
+            return error
         return error.split("*")
     @staticmethod
     def does_not_match(pw1, pw2):
@@ -47,6 +53,3 @@ class FormValidator:
             return ["Passwords do not match."]
         else:
             return ''
-            
-    def __str__(self):
-        return self.usr_input

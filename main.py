@@ -75,8 +75,8 @@ def newpost():
         entry_title = request.form['title']
         entry_post = request.form['entry']
         if entry_post == "" or entry_title == "":
-            flash('Please do not leave any fields blank')
-            return render_template('new-entry.html', title=entry_title, post=entry_post)
+            error = 'Please do not leave any fields blank'
+            return render_template('new-entry.html', title=entry_title, post=entry_post, error=error)
 
         new_entry = Post(entry_title, entry_post, None, author)
         db.session.add(new_entry)
@@ -115,8 +115,9 @@ def validate():
 
     if username_error == '' and email_error == '' and password_error == '' and verif_error == '':
         existing_user = User.query.filter_by(username=username).first()
+        existing_email = User.query.filter_by(email=email).first()
 
-        if not existing_user:
+        if not existing_user and not existing_email:
             new_user = User(email, username, password)
             db.session.add(new_user)
             db.session.flush()   #flush session to get id of inserted row
@@ -124,9 +125,12 @@ def validate():
             session['user_id'] = new_user.user_id
             flash("You have successfully registered")
             return redirect('/blog')
-        else:
-            flash("User already exists")
-            return render_template('signup.html', dictionary=form)
+        if existing_user:
+            error = "User already exists."
+            return render_template('signup.html', dictionary=form, existing_user=error)
+        if existing_email:
+            error = "Email already in use."
+            return render_template('signup.html', dictionary=form, existing_user=error)
     
     else:
         error = []
@@ -147,11 +151,11 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_pw_hash(password, user.pw_hash):
             session['user_id'] = user.user_id
-            #flash('You have successfully logged in')
+            flash('You have successfully logged in')
             return redirect('/blog')
         else:
-            #flash('Username and/or password incorrect; or user does not exist.', 'error')
-            return render_template('login.html')
+            error = 'Username and/or password incorrect; or user does not exist.'
+            return render_template('login.html', error=error)
     return render_template('login.html')
 
 @app.route('/logout')

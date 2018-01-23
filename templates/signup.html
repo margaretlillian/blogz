@@ -17,7 +17,11 @@
         </ul>
     </li>
 </ul>
-
+{% if existing_user %}
+<ul class="error">
+    <li>{{existing_user}}</li>
+</ul>
+{% endif %}
 <form method="POST">
        
                 {% for k, v in dictionary.items() %}
@@ -26,8 +30,8 @@
                     name="{{ k }}" id="{{ k }}"
                         {% if k=="password" or k=="verify" %}type="password" {% elif k=="email" %}type="email" {% else %}type="text"{% endif %} required> 
                     </label>
-                    {% if error %}
                     
+        {% if error %}
             <ul class="error">
                     {% for errors in v[1] %}
                     {% if errors|length == 0 %}
@@ -35,11 +39,12 @@
                     <li> {{errors}}</li>
                     {% endif %}
                     {% endfor %}
-    </ul>
+            </ul>
         {% endif %}               
                     
                 {% endfor %}
                 
+      
                 <input id="submit" type="submit" value="Submit">
 </form>
 </section>

@@ -2,7 +2,13 @@
 {% block title %} &Rang; Create New Entry {% endblock %}
 {% block content %}
 <section class="blogpost">
-<h2>Add New Entry</h2>
+<h2>Create New Entry</h2>
+
+{% if error %}
+<ul class="error">
+  <li>{{error}}</li>
+</ul>
+{% endif %}
 <form method="POST">
     <label>
       Title: <br>

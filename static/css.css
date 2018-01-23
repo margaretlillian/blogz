@@ -82,7 +82,8 @@ margin: 0 auto;}
     font: 1em monospace;
 }
 
-.active {font-weight: bold;}
+.active {font-weight: bold;
+    color: #af4c68;}
 
 #sidebar {
     width: 23%;

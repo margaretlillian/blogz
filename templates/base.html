@@ -46,13 +46,16 @@
 
       </section>
         <section id="content">
+    
     {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <ul class=flashes>
+  <section class="blogpost">
+    <ul class="flashes">
     {% for message in messages %}
       <li>{{ message }}</li>
     {% endfor %}
     </ul>
+  </section>
   {% endif %}
 {% endwith %}
     {% block content %}
